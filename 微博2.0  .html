@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostSpace</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f4f8;
+  color: #172033;
+}
+
+header {
+  background: white;
+  height: 65px;
+  padding: 0 7%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #ddd;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  font-size: 25px;
+  font-weight: bold;
+  color: #5b4ce9;
+}
+
+header button {
+  background: #5b4ce9;
+  border: none;
+  color: white;
+  padding: 10px 17px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.container {
+  width: 94%;
+  max-width: 700px;
+  margin: 30px auto;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.hero h1 {
+  font-size: 32px;
+  margin-bottom: 7px;
+}
+
+.hero p {
+  color: #707785;
+}
+
+.create {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 25px;
+  box-shadow: 0 3px 15px rgba(0,0,0,.05);
+}
+
+.create textarea {
+  width: 100%;
+  min-height: 100px;
+  resize: vertical;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 14px;
+  font-family: Arial;
+  font-size: 15px;
+  outline: none;
+}
+
+.create textarea:focus {
+  border-color: #5b4ce9;
+}
+
+.image-input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: 1px solid #ddd;
+  border-radius: 9px;
+}
+
+.publish {
+  margin-top: 12px;
+  background: #5b4ce9;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 9px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.publish:hover {
+  background: #4637d1;
+}
+
+.section-title {
+  margin-bottom: 15px;
+}
+
+.post {
+  background: white;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  box-shadow: 0 3px 15px rgba(0,0,0,.05);
+}
+
+.post-content {
+  padding: 20px;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.avatar {
+  width: 43px;
+  height: 43px;
+  background: #5b4ce9;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.username {
+  font-weight: bold;
+}
+
+.date {
+  color: #999;
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+.text {
+  white-space: pre-wrap;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.post-image {
+  width: 100%;
+  max-height: 550px;
+  object-fit: cover;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  border-top: 1px solid #eee;
+  padding-top: 12px;
+}
+
+.action {
+  border: none;
+  background: #f1f2f5;
+  padding: 9px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.action:hover {
+  background: #e4e5e9;
+}
+
+.liked {
+  color: #e11d48;
+}
+
+.delete {
+  color: #dc2626;
+}
+
+.comments {
+  margin-top: 15px;
+  border-top: 1px solid #eee;
+  padding-top: 15px;
+}
+
+.comment {
+  background: #f3f4f6;
+  padding: 9px 12px;
+  border-radius: 9px;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.comment strong {
+  margin-right: 5px;
+}
+
+.comment-box {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.comment-box input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.comment-box button {
+  background: #5b4ce9;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.empty {
+  text-align: center;
+  padding: 40px;
+  color: #888;
+}
+
+footer {
+  text-align: center;
+  color: #888;
+  padding: 30px;
+}
+
+@media(max-width:600px) {
+  header {
+    padding: 0 4%;
+  }
+
+  .container {
+    width: 96%;
+  }
+
+  .hero h1 {
+    font-size: 27px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">PostSpace</div>
+  <button onclick="clearAll()">Clear Posts</button>
+</header>
+
+<div class="container">
+
+  <div class="hero">
+    <h1>All Posts</h1>
+    <p>Share something with everyone.</p>
+  </div>
+
+  <div class="create">
+
+    <textarea
+      id="postText"
+      placeholder="What's on your mind?"
+    ></textarea>
+
+    <input
+      class="image-input"
+      id="imageURL"
+      type="url"
+      placeholder="Paste an image URL (optional)"
+    >
+
+    <button class="publish" onclick="createPost()">
+      Publish Post
+    </button>
+
+  </div>
+
+  <h2 class="section-title">Latest Posts</h2>
+
+  <div id="posts"></div>
+
+</div>
+
+<footer>
+  © 2026 PostSpace
+</footer>
+
+
+<script>
+
+let posts = JSON.parse(localStorage.getItem("postspace_posts")) || [];
+
+
+/* CREATE POST */
+
+function createPost() {
+
+  const text =
+    document.getElementById("postText").value.trim();
+
+  const image =
+    document.getElementById("imageURL").value.trim();
+
+  if (!text) {
+    alert("Please write something first.");
+    return;
+  }
+
+  const post = {
+    id: Date.now(),
+    username: "You",
+    text: text,
+    image: image,
+    likes: 0,
+    liked: false,
+    comments: [],
+    date: new Date().toLocaleString()
+  };
+
+  posts.unshift(post);
+
+  save();
+
+  document.getElementById("postText").value = "";
+  document.getElementById("imageURL").value = "";
+
+  displayPosts();
+}
+
+
+/* DISPLAY POSTS */
+
+function displayPosts() {
+
+  const container =
+    document.getElementById("posts");
+
+  if (posts.length === 0) {
+
+    container.innerHTML = `
+      <div class="empty">
+        No posts yet.<br>
+        Be the first person to post!
+      </div>
+    `;
+
+    return;
+  }
+
+  container.innerHTML = posts.map(post => {
+
+    const commentsHTML =
+      post.comments.map(comment => `
+        <div class="comment">
+          <strong>${escapeHTML(comment.username)}</strong>
+          ${escapeHTML(comment.text)}
+        </div>
+      `).join("");
+
+    return `
+
+      <article class="post">
+
+        ${
+          post.image
+          ? `
+            <img
+              class="post-image"
+              src="${escapeHTML(post.image)}"
+              onerror="this.style.display='none'"
+            >
+          `
+          : ""
+        }
+
+        <div class="post-content">
+
+          <div class="user">
+
+            <div class="avatar">
+              ${post.username.charAt(0)}
+            </div>
+
+            <div>
+
+              <div class="username">
+                ${escapeHTML(post.username)}
+              </div>
+
+              <div class="date">
+                ${escapeHTML(post.date)}
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="text">
+            ${escapeHTML(post.text)}
+          </div>
+
+          <div class="actions">
+
+            <button
+              class="action ${post.liked ? "liked" : ""}"
+              onclick="likePost(${post.id})"
+            >
+              ${post.liked ? "❤️" : "♡"}
+              ${post.likes}
+            </button>
+
+            <button
+              class="action"
+              onclick="focusComment(${post.id})"
+            >
+              💬 ${post.comments.length}
+            </button>
+
+            <button
+              class="action delete"
+              onclick="deletePost(${post.id})"
+            >
+              Delete
+            </button>
+
+          </div>
+
+          <div class="comments">
+
+            ${commentsHTML}
+
+            <div class="comment-box">
+
+              <input
+                id="comment-${post.id}"
+                placeholder="Write a comment..."
+              >
+
+              <button
+                onclick="addComment(${post.id})"
+              >
+                Send
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </article>
+
+    `;
+
+  }).join("");
+}
+
+
+/* LIKE */
+
+function likePost(id) {
+
+  const post =
+    posts.find(p => p.id === id);
+
+  if (!post) return;
+
+  if (post.liked) {
+    post.likes--;
+    post.liked = false;
+  } else {
+    post.likes++;
+    post.liked = true;
+  }
+
+  save();
+  displayPosts();
+}
+
+
+/* COMMENT */
+
+function addComment(id) {
+
+  const input =
+    document.getElementById(`comment-${id}`);
+
+  const text =
+    input.value.trim();
+
+  if (!text) return;
+
+  const post =
+    posts.find(p => p.id === id);
+
+  post.comments.push({
+    username: "You",
+    text: text
+  });
+
+  save();
+
+  displayPosts();
+}
+
+
+/* FOCUS COMMENT */
+
+function focusComment(id) {
+
+  const input =
+    document.getElementById(`comment-${id}`);
+
+  if (input) {
+    input.focus();
+  }
+}
+
+
+/* DELETE */
+
+function deletePost(id) {
+
+  if (!confirm("Delete this post?")) {
+    return;
+  }
+
+  posts =
+    posts.filter(post => post.id !== id);
+
+  save();
+
+  displayPosts();
+}
+
+
+/* CLEAR */
+
+function clearAll() {
+
+  if (!posts.length) return;
+
+  if (!confirm("Delete ALL posts?")) {
+    return;
+  }
+
+  posts = [];
+
+  save();
+
+  displayPosts();
+}
+
+
+/* SAVE */
+
+function save() {
+
+  localStorage.setItem(
+    "postspace_posts",
+    JSON.stringify(posts)
+  );
+}
+
+
+/* SECURITY */
+
+function escapeHTML(text) {
+
+  const div =
+    document.createElement("div");
+
+  div.textContent = text;
+
+  return div.innerHTML;
+}
+
+
+/* START */
+
+displayPosts();
+
+</script>
+
+</body>
+</html>
